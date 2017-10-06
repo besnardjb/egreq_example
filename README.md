@@ -1,8 +1,8 @@
-# Extended Generic Request Example
+# Extended Generalized Request Example
 
 ## Dependencies
 
-In order to use Extended Generic Requests you need an MPI runtime supporting
+In order to use Extended Generalized Requests you need an MPI runtime supporting
 them. As they are not standard you may use (to my knowledge) either MPICH or one
 of its derivative or the MPC MPI runtime.
 
