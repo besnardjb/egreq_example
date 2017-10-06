@@ -63,7 +63,7 @@ int xMPI_Request_wait_fn( int cnt, void ** array_of_states, double timeout, MPI_
     char *done_array = _done_array;
     if( 128 <= cnt )
     {
-        done_array = malloc( cnt * sizeof(char));
+        done_array = calloc( cnt ,  sizeof(char));
         if( !done_array )
         {
             perror("malloc");
