@@ -34,6 +34,8 @@ struct nbc_op{
     MPI_Comm comm;
     void * buff;
     int tag;
+    MPI_Datatype datatype;
+    int count;
     MPI_Request request;
 };
 
@@ -54,6 +56,8 @@ int nbc_op_init( struct nbc_op * op,
                  nbc_op_type type,
                  int remote,
                  MPI_Comm comm,
+                 MPI_Datatype datatype,
+                 int count,
                  void * buff,
                  int tag )
 {
@@ -63,6 +67,8 @@ int nbc_op_init( struct nbc_op * op,
     op->remote = remote;
     op->comm = comm;
     op->buff = buff;
+    op->datatype = datatype;
+    op->count = count;
     op->tag = tag;
 }
 
@@ -170,6 +176,8 @@ xMPI_Request * xMPI_Request_new(MPI_Request * parent, int size)
                     TYPE_NULL,
                     -1,
                     MPI_COMM_NULL,
+                    MPI_DATATYPE_NULL,
+                    0,
                     NULL,
                     0 );
 
@@ -390,46 +398,46 @@ int MPI_Ixbarrier( MPI_Comm comm , MPI_Request * req )
 
     if( 0 <= lc ){
       //FOO(stderr, "POST %d RECV from Lc %d\n", rank, lc );
-        nbc_op_init( &xreq->op[0], TYPE_RECV, lc, comm, &c, 12345 );
+        nbc_op_init( &xreq->op[0], TYPE_RECV, lc, comm, MPI_CHAR, 1, &c, 12345 );
     }
 
 
     if( 0 <= rc ) 
     {
         //FOO(stderr, "POST %d RECV from Rc %d\n", rank, rc );
-        nbc_op_init( &xreq->op[1], TYPE_RECV, rc, comm, &c, 12345 );
+        nbc_op_init( &xreq->op[1], TYPE_RECV, rc, comm, MPI_CHAR, 1, &c, 12345 );
     }
 
     //FOO(stderr, "POST %d WAIT\n", rank );
-    nbc_op_init( &xreq->op[2], TYPE_WAIT, parent, comm, &c, 12345 );
+    nbc_op_init( &xreq->op[2], TYPE_WAIT, parent, comm, MPI_CHAR, 1, &c, 12345 );
 
 
     if( 0 <= parent ) {
         //FOO(stderr, "POST %d SEND to Par %d\n", rank, parent );
-        nbc_op_init( &xreq->op[3], TYPE_SEND, parent, comm, &c, 12345 );
+        nbc_op_init( &xreq->op[3], TYPE_SEND, parent, comm, MPI_CHAR, 1, &c, 12345 );
         //FOO(stderr, "POST %d RECV from Par %d\n", rank, parent );
-        nbc_op_init( &xreq->op[4], TYPE_RECV, parent, comm, &c, 12345 );
+        nbc_op_init( &xreq->op[4], TYPE_RECV, parent, comm, MPI_CHAR, 1, &c, 12345 );
     }
 
 
     //FOO(stderr, "POST %d WAIT\n", rank );
-    nbc_op_init( &xreq->op[5], TYPE_WAIT, parent, comm, &c, 12345 );
+    nbc_op_init( &xreq->op[5], TYPE_WAIT, parent, comm, MPI_CHAR, 1, &c, 12345 );
 
 
     if( 0 <= lc )
     {
         //FOO(stderr, "POST %d SEND to Lc %d\n", rank, lc );
-        nbc_op_init( &xreq->op[6], TYPE_SEND, lc, comm, &c, 12345 );
+        nbc_op_init( &xreq->op[6], TYPE_SEND, lc, comm, MPI_CHAR, 1, &c, 12345 );
     }
 
     if( 0 <= rc )
     {
         //FOO(stderr, "POST %d SEND to Rc %d\n", rank, rc );
-        nbc_op_init( &xreq->op[7], TYPE_SEND, rc, comm, &c, 12345 );
+        nbc_op_init( &xreq->op[7], TYPE_SEND, rc, comm, MPI_CHAR, 1, &c, 12345 );
     }
 
     //FOO(stderr, "POST %d WAIT\n", rank );
-    nbc_op_init( &xreq->op[8], TYPE_WAIT, parent, comm, &c, 12345 );
+    nbc_op_init( &xreq->op[8], TYPE_WAIT, parent, comm, MPI_CHAR, 1, &c, 12345 );
  
     return    MPIX_Grequest_start( xMPI_Request_query_fn,
                                    xMPI_Request_free_fn,
